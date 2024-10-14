@@ -1,63 +1,48 @@
 import streamlit as st
-import pickle
 import pandas as pd
+import pickle
 
 # Load the trained model
-with open('lgbm_model.pkl', 'rb') as file:
+with open('bankruptcy_model.pkl', 'rb') as file:
     model = pickle.load(file)
 
-# Function to make predictions using the model
+# Function to make predictions
 def predict(input_data):
-    # Convert input data into DataFrame
-    input_df = pd.DataFrame([input_data])
+    input_df = pd.DataFrame(input_data, index=[0])
     prediction = model.predict(input_df)
     return prediction[0]
 
-# Streamlit App Title and Description
-st.title("💼 Bankruptcy Risk Prediction")
-st.markdown("""
-    **Predict the likelihood of bankruptcy risk** based on financial metrics.
-    Fill in the values for the following key financial indicators:
-""")
+# Streamlit app layout
+st.title("Bankruptcy Prediction App")
+st.markdown("This app predicts the likelihood of bankruptcy based on input features.")
 
-# List of selected important features
-important_features = [
-    'Interest-bearing debt interest rate', 
-    'Revenue per person', 
-    'Inventory Turnover Rate (times)', 
-    'Cash Turnover Rate', 
-    'Allocation rate per person', 
-    'Non-industry income and expenditure/revenue', 
-    'Fixed Assets Turnover Frequency', 
-    'Accounts Receivable Turnover', 
-    'Research and development expense rate', 
-    'Quick Ratio'
-]
+# User input fields
+interest_bearing_debt_interest_rate = st.number_input("Interest-bearing debt interest rate", min_value=0.0, step=0.01)
+revenue_per_person = st.number_input("Revenue per person", min_value=0.0, step=0.01)
+inventory_turnover_rate = st.number_input("Inventory Turnover Rate (times)", min_value=0.0, step=0.01)
+cash_turnover_rate = st.number_input("Cash Turnover Rate", min_value=0.0, step=0.01)
+allocation_rate_per_person = st.number_input("Allocation rate per person", min_value=0.0, step=0.01)
+non_industry_income_expenditure = st.number_input("Non-industry income and expenditure/revenue", min_value=0.0, step=0.01)
+fixed_assets_turnover_frequency = st.number_input("Fixed Assets Turnover Frequency", min_value=0.0, step=0.01)
+accounts_receivable_turnover = st.number_input("Accounts Receivable Turnover", min_value=0.0, step=0.01)
+research_development_expense_rate = st.number_input("Research and development expense rate", min_value=0.0, step=0.01)
+quick_ratio = st.number_input("Quick Ratio", min_value=0.0, step=0.01)
 
-# Input fields for each important feature
-input_data = {}
-for feature in important_features:
-    input_data[feature] = st.number_input(f"Enter {feature} value", min_value=0.0, step=0.1)
+# Prepare the input data
+input_data = {
+    'Interest-bearing debt interest rate': interest_bearing_debt_interest_rate,
+    'Revenue per person': revenue_per_person,
+    'Inventory Turnover Rate (times)': inventory_turnover_rate,
+    'Cash Turnover Rate': cash_turnover_rate,
+    'Allocation rate per person': allocation_rate_per_person,
+    'Non-industry income and expenditure/revenue': non_industry_income_expenditure,
+    'Fixed Assets Turnover Frequency': fixed_assets_turnover_frequency,
+    'Accounts Receivable Turnover': accounts_receivable_turnover,
+    'Research and development expense rate': research_development_expense_rate,
+    'Quick Ratio': quick_ratio
+}
 
-# Add some styling and user engagement
-st.markdown("""
-    <style>
-    .css-1cpxqw2, .css-15tx938 {
-        font-family: 'Courier New', Courier, monospace;
-        font-size: 18px;
-        background-color: #f4f4f4;
-        border-radius: 10px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Prediction button
-if st.button('Predict'):
+# Predict and display the result
+if st.button("Predict"):
     prediction = predict(input_data)
-    
-    # Display result with formatting
-    if prediction == 1:
-        st.markdown("<h2 style='color: red;'>⚠️ The model predicts a high risk of bankruptcy!</h2>", unsafe_allow_html=True)
-    else:
-        st.markdown("<h2 style='color: green;'>✅ The model predicts no risk of bankruptcy.</h2>", unsafe_allow_html=True)
-
+    st.success(f"The predicted bankruptcy status is: {'Bankrupt' if prediction == 1 else 'Not Bankrupt'}")

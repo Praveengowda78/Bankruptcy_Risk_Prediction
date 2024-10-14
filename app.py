@@ -61,9 +61,3 @@ if st.button('Predict'):
     else:
         st.markdown("<h2 style='color: green;'>✅ The model predicts no risk of bankruptcy.</h2>", unsafe_allow_html=True)
 
-'''# Footer for better engagement
-st.markdown("""
-    ---
-    *Created by Praveen - Machine Learning Enthusiast*  
-    For inquiries or more information, contact: [Praveen's Contact](mailto:praveen@example.com)
-""")'''

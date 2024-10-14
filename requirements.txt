@@ -2,4 +2,3 @@ streamlit
 lightgbm
 pandas
 scikit-learn
-pickle5
